@@ -10,6 +10,7 @@ export default {
       },
       fontFamily: {
         sulphurPoint: ["Sulphur Point", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
     },
   },
