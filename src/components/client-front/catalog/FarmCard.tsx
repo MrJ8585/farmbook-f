@@ -1,63 +1,96 @@
 import React from "react";
-import { IconType } from "react-icons";
 
-type practices = {
-  name: string;
-  icon: IconType;
-};
+import { useNavigate } from "react-router-dom";
 
 export type farmCard = {
-  name: string;
-  description: string;
-  location: string;
-  mainProducts: Array<string>;
-  sustainablePractices: Array<practices>;
-  image: string;
+  id: number;
+  nombre: string;
+  ubicacion: string;
+  descripcion: string;
+  rating: number;
+  imagen: string;
+  productos: {
+    desc: string;
+    name: string;
+    image: string;
+  }[];
+  granja_practicas: {
+    practicassustentables: {
+      id: number;
+      nombre: string;
+      descripcion: string;
+      icon: string;
+    };
+  }[];
+  badge_granja: {
+    badge: {
+      id: number;
+      imagen: string;
+      nombre: string;
+      descripcion: string;
+    };
+  }[];
 };
 
 const FarmCard: React.FC<farmCard> = ({
-  image,
-  name,
-  description,
-  location,
-  mainProducts,
-  sustainablePractices,
+  id,
+  nombre,
+  ubicacion,
+  descripcion,
+  rating,
+  imagen,
+  productos,
+  granja_practicas,
 }) => {
+  const navigate = useNavigate();
+
+  console.log(granja_practicas);
+
   return (
-    <div className="w-full h-[200px] bg-white rounded-md shadow-lg flex justify-start items-center">
+    <div
+      className="w-full min-h-[200px] bg-white rounded-md shadow-lg flex justify-start items-center hover:bg-zinc-200 cursor-pointer tr"
+      onClick={() => navigate(`/catalog/${id}`)}
+    >
       <div className="w-[30%] h-full p-3">
         <div
-          style={{ backgroundImage: `url("${image}")` }}
-          className="w-full h-full rounded-md bg-cover bg-center"
+          style={{ backgroundImage: `url("${imagen}")` }}
+          className="w-full min-h-[200px] rounded-md bg-cover bg-center"
         ></div>
       </div>
-      <div className="w-[70%] h-full flex flex-col justify-between py-4 pl-3">
-        <span className="text-2xl font-inter font-light w-full flex justify-start gap-5">
-          <span>{name}</span>
+      <div className="w-[70%] h-full flex flex-col justify-between py-4 px-3">
+        <span className="flex justify-between items-center pr-5">
+          <span className="text-2xl font-inter font-light w-full flex justify-start gap-5">
+            <span>{nombre}</span>
 
-          <span className="flex gap-3 items-center text-base">
-            {sustainablePractices.map((icon, idx) => (
-              <span key={idx} className="relative group">
-                <icon.icon className="hover:scale-105 tr cursor-pointer" />
+            <span className="flex gap-3 items-center text-base">
+              {granja_practicas.map((icon, idx) => (
+                <span key={idx} className="relative group">
+                  <img
+                    src={`${icon.practicassustentables.icon}`}
+                    className="h-[20px] cursor-pointer hover:scale-105 tr"
+                  />
 
-                <span className="absolute bg-zinc-100 text-nowrap p-1 rounded-sm shadow-md hidden group-hover:flex select-none">
-                  {icon.name}
+                  <span className="absolute bg-zinc-100 text-nowrap p-1 rounded-sm shadow-md hidden group-hover:flex select-none">
+                    {icon.practicassustentables.descripcion}
+                  </span>
                 </span>
-              </span>
-            ))}
+              ))}
+            </span>
           </span>
+
+          <span>{rating}/5</span>
         </span>
 
         <span className="flex flex-col gap-1 mt-4 w-full">
-          <span>Descripción: {description}</span>
-          <span>Ubicación: {location}</span>
+          <span>Descripción: {descripcion}</span>
+          <span>Ubicación: {ubicacion}</span>
         </span>
 
         <span className="w-full">
-          {mainProducts.map((item, idx) => (
+          {productos.map((item, idx) => (
             <span key={idx} className="font-extralight text-zinc-500 text-sm">
               {" "}
-              {item} |
+              {item.name} |
             </span>
           ))}
         </span>

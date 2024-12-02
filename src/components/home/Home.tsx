@@ -128,9 +128,9 @@ function Home() {
         </div>
 
         <div className="w-full py-4 flex justify-center items-center">
-          <button className="border-[1px] border-white py-2 px-12 rounded-full font-light hover:bg-white hover:text-black tr">
+          {/* <button className="border-[1px] border-white py-2 px-12 rounded-full font-light hover:bg-white hover:text-black tr">
             <span className="text-xl">Log out</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

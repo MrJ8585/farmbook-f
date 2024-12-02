@@ -11,24 +11,23 @@ function Register() {
       <div className="h-[200%] w-[500px] bg-white rotate-[30deg] -translate-x-[40%] -translate-y-[30%]"></div>
 
       <div className="flex w-full h-full absolute top-0 p-5 flex-col justify-start">
-        <div className="flex justify-start items-center w-full h-[100px] px-5">
-          <div className="w-full flex justify-between items-center">
-            <div className="rounded-full bg-main-blue flex justify-center items-center w-[200px] h-[50px]">
-              <span className="font-sulphurPoint font-bold text-4xl text-secondary-blue">
-                farmbook
-              </span>
-            </div>
+        <div className="w-full h-[10%] flex justify-between items-center px-6">
+          <div
+            className="rounded-full bg-main-blue flex justify-center items-center w-[200px] h-[50px] cursor-pointer select-none"
+            onClick={() => navigate("/")}
+          >
+            <span className="font-sulphurPoint font-bold text-4xl text-secondary-blue">
+              farmbook
+            </span>
+          </div>
 
-            <div
-              className="flex flex-col justify-start gap-3 hover:scale-110 tr cursor-pointer"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
-              <span className="h-[1px] w-[40px] bg-black"></span>
-              <span className="h-[1px] w-[40px] bg-black"></span>
-              <span className="h-[1px] w-[40px] bg-black"></span>
-            </div>
+          <div
+            className="flex flex-col justify-center items-center gap-3 cursor-pointer"
+            onClick={() => setIsOpen(true)}
+          >
+            <span className="w-[40px] h-[1px] bg-black"></span>
+            <span className="w-[40px] h-[1px] bg-black"></span>
+            <span className="w-[40px] h-[1px] bg-black"></span>
           </div>
         </div>
 
@@ -131,9 +130,9 @@ function Register() {
           </div>
 
           <div className="w-full py-4 flex justify-center items-center">
-            <button className="border-[1px] border-white py-2 px-12 rounded-full font-light hover:bg-white hover:text-black tr">
+            {/* <button className="border-[1px] border-white py-2 px-12 rounded-full font-light hover:bg-white hover:text-black tr">
               <span className="text-xl">Log out</span>
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
