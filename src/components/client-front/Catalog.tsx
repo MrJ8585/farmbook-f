@@ -74,7 +74,7 @@ function Catalog() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="h-screen w-full bg-secondary-blue flex flex-col justify-start items-center relative">
+    <div className="h-screen w-full bg-secondary-blue flex flex-col justify-start items-center relative overflow-x-hidden">
       <div className="w-full h-[10%] flex justify-between items-center px-6">
         <div
           className="rounded-full bg-main-blue flex justify-center items-center w-[200px] h-[50px] cursor-pointer select-none"
