@@ -68,10 +68,13 @@ const EditFarm = () => {
     formData.append("image", selectedFile);
 
     try {
-      const response = await fetch(`${route}/farm/${farmInfo.GranjaID}/image`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `${route}/updateImage/farm/${farmInfo.GranjaID}/image`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
 
       const result = await response.json();
 
