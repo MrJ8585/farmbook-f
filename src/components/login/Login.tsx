@@ -29,10 +29,12 @@ function Login() {
 
       const data = await response.json();
 
-      if (data.user.TipoClienteID == 1) {
-        navigate(`/profile/${data.user.UsuarioID}`);
-      } else if (data.user.TipoClienteID == 2) {
-        navigate(`/catalog`);
+      if (data) {
+        if (data.user.TipoClienteID == 1) {
+          navigate(`/profile/${data.user.UsuarioID}`);
+        } else if (data.user.TipoClienteID == 2) {
+          navigate(`/catalog`);
+        }
       }
 
       console.log(data);
