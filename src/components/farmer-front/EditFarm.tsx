@@ -20,6 +20,21 @@ const EditFarm = () => {
     badges: null,
   });
 
+  const { id } = useParams();
+  const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleGetInfo = async () => {
+    try {
+      const response = await fetch(`${route}/myFarm/${id}`);
+      const data = await response.json();
+      setFarmInfo(formatGranjaData(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const formatGranjaData = (data: any): FormattedGranja => {
     return {
       GranjaID: data.GranjaID || null,
@@ -38,44 +53,46 @@ const EditFarm = () => {
     };
   };
 
-  const { id } = useParams();
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
 
-  const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
+  const handleImage = async () => {
+    if (!selectedFile) {
+      console.error("No image selected");
+      return;
+    }
 
-  const handleGetInfo = async () => {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+
     try {
-      const response = await fetch(`${route}/myFarm/${id}`);
+      const response = await fetch(`${route}/farm/${farmInfo.GranjaID}/image`, {
+        method: "PUT",
+        body: formData,
+      });
 
-      const data = await response.json();
+      const result = await response.json();
 
-      setFarmInfo(formatGranjaData(data));
-    } catch (err) {
-      console.log(err);
+      console.log(response);
+
+      if (response.ok) {
+        console.log("Image uploaded successfully:", result.imageUrl);
+        alert("Imagen actualizada exitosamente.");
+      } else {
+        console.error("Failed to upload image:", result.error);
+        alert("Error al actualizar la imagen.");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Error al subir la imagen.");
     }
   };
 
   useEffect(() => {
     handleGetInfo();
   }, []);
-
-  const [_, setFiles] = useState<FileList | null>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFiles(event.target.files);
-  };
-
-  //   const handleSubmit = (event: React.FormEvent) => {
-  //     event.preventDefault();
-  //     if (files) {
-  //       for (let i = 0; i < files.length; i++) {
-  //         console.log(`File: ${files[i].name}`);
-  //       }
-  //     }
-  //   };
-
-  useEffect(() => {
-    console.log(farmInfo);
-  }, [farmInfo]);
 
   return (
     <div className="w-full">
@@ -88,12 +105,6 @@ const EditFarm = () => {
             farmbook
           </span>
         </div>
-
-        <div className="flex flex-col justify-center items-center gap-3">
-          {/* <span className="w-[40px] h-[1px] bg-black"></span>
-          <span className="w-[40px] h-[1px] bg-black"></span>
-          <span className="w-[40px] h-[1px] bg-black"></span> */}
-        </div>
       </div>
 
       <div className="w-full flex justify-center items-center mb-5 flex-col">
@@ -105,55 +116,16 @@ const EditFarm = () => {
         </span>
         <div className="bg-main-blue w-[60%] flex flex-col p-5 gap-4 font-light">
           <span className="text-white w-full flex gap-2 flex-col">
-            <span>Nombre:</span>
-            <input
-              className="w-full rounded-sm text-black p-1"
-              value={farmInfo.Nombre}
-              onChange={(e) => {
-                setFarmInfo({
-                  ...farmInfo,
-                  Nombre: e.target.value,
-                });
-              }}
-            />
-          </span>
-
-          <span className="text-white w-full flex gap-2 flex-col">
-            <span>Ubicación:</span>
-            <input
-              className="w-full rounded-sm text-black p-1"
-              value={farmInfo.Ubicacion}
-              onChange={(e) => {
-                setFarmInfo({
-                  ...farmInfo,
-                  Ubicacion: e.target.value,
-                });
-              }}
-            />
-          </span>
-
-          <span className="text-white w-full flex gap-2 flex-col">
-            <span>Descripción:</span>
-            <input
-              className="w-full rounded-sm text-black p-1"
-              value={farmInfo.Descripcion}
-              onChange={(e) => {
-                setFarmInfo({
-                  ...farmInfo,
-                  Descripcion: e.target.value,
-                });
-              }}
-            />
-          </span>
-
-          <div className="text-white w-full flex gap-2 flex-col">
             <label htmlFor="fileUpload">Farm Image:</label>
             <input type="file" id="fileUpload" onChange={handleFileChange} />
-          </div>
+          </span>
 
           <span className="w-full flex justify-end items-end">
-            <button className="bg-green-800 text-white px-3 py-1 rounded-md hover:scale-105 tr">
-              Actualizar
+            <button
+              className="bg-green-800 text-white px-3 py-1 rounded-md hover:scale-105 tr"
+              onClick={handleImage}
+            >
+              Subir Imagen
             </button>
           </span>
         </div>
