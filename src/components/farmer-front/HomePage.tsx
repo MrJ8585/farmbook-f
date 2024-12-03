@@ -159,7 +159,7 @@ function HomePage() {
                   <button
                     className="flex bg-zinc-400 items-center rounded-full justify-between px-2 hover:bg-zinc-600 tr"
                     onClick={() => {
-                      navigate(`/editfarm/${cliente.GranjaID}`);
+                      navigate(`/editfarm/${cliente.usuario?.id}`);
                     }}
                   >
                     <span>Edit Info</span>
@@ -168,7 +168,7 @@ function HomePage() {
                   <button
                     className="flex bg-zinc-400 items-center rounded-full gap-3 px-2 hover:bg-zinc-600 tr"
                     onClick={() => {
-                      navigate(`/editpracts/${cliente.GranjaID}`);
+                      navigate(`/editpracts/${cliente.usuario?.id}`);
                     }}
                   >
                     <span>Edit Prácticas</span>
@@ -242,7 +242,7 @@ function HomePage() {
               <button
                 className="flex bg-zinc-400 items-center rounded-full gap-3 px-2 hover:bg-zinc-600 tr"
                 onClick={() => {
-                  navigate(`/editproducts/${cliente.GranjaID}`);
+                  navigate(`/editproducts/${cliente.usuario?.id}`);
                 }}
               >
                 <span>Edit Productos</span>
