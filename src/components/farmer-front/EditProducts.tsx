@@ -42,7 +42,7 @@ function EditProducts() {
   const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
   const handleProfileInfo = async () => {
     try {
-      const response = await fetch(`${route}/myfarm/${id}`);
+      const response = await fetch(`${route}/myFarm/${id}`);
 
       const data = await response.json();
 
@@ -56,7 +56,7 @@ function EditProducts() {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`${route}/products/${id}`, {
+      const response = await fetch(`${route}/deleteProducts/${id}`, {
         method: "DELETE",
       });
 
@@ -91,7 +91,7 @@ function EditProducts() {
     };
 
     try {
-      const response = await fetch(`${route}/products`, {
+      const response = await fetch(`${route}/addProducts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dummy),
