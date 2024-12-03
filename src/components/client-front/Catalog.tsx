@@ -100,7 +100,7 @@ function Catalog() {
 			const response = await fetch(`${route}/farms`);
 
 			let data = await response.json();
-
+			console.log(data);
 			if (Array.isArray(data)) {
 				data = data.flatMap((item: Granja) => formatGranjaData(item));
 			} else {
