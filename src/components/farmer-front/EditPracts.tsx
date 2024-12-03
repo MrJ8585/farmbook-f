@@ -6,7 +6,7 @@ import { FormattedGranja } from "./HomePage";
 function EditPracts() {
 	const { id } = useParams();
 
-	const [] = useState([
+	const [practs] = useState([
 		"Fertilizantes naturales",
 		"Irrigación por goteo",
 		"Cultivos de cobertura",
@@ -39,7 +39,7 @@ function EditPracts() {
 		};
 	};
 
-	const [_, setCliente] = useState<FormattedGranja>({
+	const [cliente, setCliente] = useState<FormattedGranja>({
 		GranjaID: null,
 		Nombre: "",
 		Ubicacion: "",
@@ -52,12 +52,15 @@ function EditPracts() {
 		practicas_sustentables: null,
 		badges: null,
 	});
+
 	const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
 	const handleProfileInfo = async () => {
 		try {
 			const response = await fetch(`${route}/myfarm/${id}`);
 
 			const data = await response.json();
+
+			console.log(data);
 
 			setCliente(formatGranjaData(data));
 		} catch (err) {
@@ -68,6 +71,8 @@ function EditPracts() {
 	useEffect(() => {
 		handleProfileInfo();
 	}, []);
+
+	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<div className="w-full">
@@ -96,6 +101,49 @@ function EditPracts() {
 					/>
 				</span>
 				<div className="bg-main-blue w-[60%] flex flex-col p-5 gap-4 font-light">
+					<div className="w-full flex flex-col gap-2">
+						{cliente.practicas_sustentables?.map((item, idx) => (
+							<div
+								key={idx}
+								className="text-white flex justify-between w-full bg-zinc-600 py-1 pl-3 pr-1 rounded-sm items-center"
+							>
+								<span>{item.nombre}</span>
+								<button className="bg-red-600 py-1 px-3 rounded-md hover:bg-red-800 tr">
+									Eliminar
+								</button>
+							</div>
+						))}
+					</div>
+
+					<div>
+						<button
+							className="bg-secondary-blue py-1 px-3 rounded-sm hover:scale-105 tr"
+							onClick={() => {
+								setIsOpen(!isOpen);
+							}}
+						>
+							{isOpen ? "Cancelar" : "Agregar"}
+						</button>
+					</div>
+
+					<div>
+						{isOpen ? (
+							<div className="flex flex-col gap-3">
+								<select>
+									{practs.map((item, idx) => (
+										<option key={idx}>{item}</option>
+									))}
+								</select>
+
+								<span className="w-full flex justify-end items-center">
+									<button className="bg-secondary-blue py-1 px-3 rounded-sm hover:scale-105 tr">
+										Agregar
+									</button>
+								</span>
+							</div>
+						) : null}
+					</div>
+
 					<span className="w-full flex justify-end items-end">
 						<button className="bg-green-800 text-white px-3 py-1 rounded-md hover:scale-105 tr">
 							Actualizar
