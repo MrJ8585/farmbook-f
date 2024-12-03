@@ -20,6 +20,7 @@ export type FormattedGranja = {
     tipoClienteID: number;
   } | null;
   productos: {
+    id: number;
     name: string;
     descripcion: string;
     image: string;
@@ -86,6 +87,8 @@ function HomePage() {
       const response = await fetch(`${route}/myfarm/${id}`);
 
       const data = await response.json();
+
+      console.log(formatGranjaData(data));
 
       setCliente(formatGranjaData(data));
     } catch (err) {
@@ -184,12 +187,12 @@ function HomePage() {
                       (prac: any, idx: number) => (
                         <span key={idx} className="relative group">
                           <img
-                            src={`${prac.practicassustentables.icon}`}
+                            src={`${prac.icon}`}
                             className="h-[20px] cursor-pointer hover:scale-105 tr"
                           />
 
                           <span className="absolute bg-zinc-100 text-nowrap p-1 rounded-sm shadow-md hidden group-hover:flex select-none">
-                            {prac.practicassustentables.nombre}
+                            {prac.nombre}
                           </span>
                         </span>
                       )

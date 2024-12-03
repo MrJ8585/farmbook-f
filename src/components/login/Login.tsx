@@ -5,6 +5,34 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
+
+  const [userInfo, setUserInfo] = useState({
+    correo: "",
+    pass: "",
+  });
+
+  const handleLogin = async () => {
+    let dummy = {
+      correo: userInfo.correo,
+      contrasena: userInfo.pass,
+    };
+
+    try {
+      const response = await fetch(`${route}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dummy),
+      });
+
+      const data = await response.json();
+
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const navigate = useNavigate();
   return (
     <div className="bg-secondary-blue h-screen w-full relative overflow-hidden flex">
@@ -41,16 +69,30 @@ function Login() {
           <div className="flex flex-col justify-start gap-4 w-[40%]">
             <span className="flex flex-col justify-start items-start">
               <span className="font-sulphurPoint text-xl">Correo</span>
-              <input className="w-full p-3"></input>
+              <input
+                className="w-full p-3"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, correo: e.target.value })
+                }
+              />
             </span>
 
             <span className="flex flex-col justify-start items-start">
               <span className="font-sulphurPoint text-xl">Contraseña</span>
-              <input className="w-full p-3" type="password"></input>
+              <input
+                className="w-full p-3"
+                type="password"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, pass: e.target.value })
+                }
+              />
             </span>
 
             <span className="w-full flex justify-end items-end">
-              <button className="py-3 px-10 bg-main-blue text-white hover:scale-105 tr">
+              <button
+                className="py-3 px-10 bg-main-blue text-white hover:scale-105 tr"
+                onClick={() => handleLogin()}
+              >
                 Ingresar
               </button>
             </span>
