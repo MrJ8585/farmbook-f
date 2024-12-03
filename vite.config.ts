@@ -12,7 +12,7 @@ export default defineConfig({
 				port: 3000,
 				proxy: {
 					"/api": {
-						target: "http://localhost:3001", // Backend local
+						target: "https://farmbook85-backend.azurewebsites.net", // Backend local
 						changeOrigin: true,
 					},
 				},
