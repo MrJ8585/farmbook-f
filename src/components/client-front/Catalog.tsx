@@ -99,7 +99,7 @@ function Catalog() {
 
       let data = await response.json();
 
-      data = data.flatMap((item: Granja) => formatGranjaData(item));
+      data = data.map((item: Granja) => formatGranjaData(item)).flat();
 
       setAllFarms(data);
     } catch (err) {
