@@ -87,11 +87,10 @@ function Catalog() {
     ];
   }
 
+  const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
   const applyFilters = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_APP_SERVER_URL}/farms`
-      );
+      const response = await fetch(`${route}/farms`);
 
       let data = await response.json();
 
