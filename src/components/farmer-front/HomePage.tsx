@@ -2,58 +2,92 @@ import { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductCard from "../client-front/catalog/ProductCard";
-import { farmCard } from "../client-front/catalog/FarmCard";
 
-type Cliente = {
-  id: number;
-  correo: string;
-  contrasena: string;
-  nombre: string;
-  apellido: string;
-  edad: number;
-  tipo_cliente: string;
-  granja_id: number;
-  imagen: string;
-  granja: farmCard;
+export type FormattedGranja = {
+  GranjaID: number | null;
+  Nombre: string;
+  Ubicacion: string;
+  Descripcion: string;
+  Rating: number | null;
+  Imagen: string;
+  UsuarioID: number | null;
+  usuario: {
+    id: number;
+    correo: string;
+    nombre: string;
+    apellido: string;
+    edad: number;
+    tipoClienteID: number;
+  } | null;
+  productos: {
+    name: string;
+    descripcion: string;
+    image: string;
+  }[];
+  practicas_sustentables:
+    | {
+        id: number;
+        nombre: string;
+        descripcion: string;
+        icon: string;
+      }[]
+    | null;
+  badges:
+    | {
+        id: number;
+        nombre: string;
+        descripcion: string;
+        imagen: string;
+      }[]
+    | null;
 };
 
 function HomePage() {
+  const formatGranjaData = (data: any): FormattedGranja => {
+    return {
+      GranjaID: data.GranjaID || null,
+      Nombre: data.Nombre || "",
+      Ubicacion: data.Ubicacion || "",
+      Descripcion: data.Descripcion || "",
+      Rating: data.Rating || null,
+      Imagen: data.Imagen || "",
+      UsuarioID: data.UsuarioID || null,
+      usuario: data.usuario ? JSON.parse(data.usuario) : null,
+      productos: data.productos ? JSON.parse(data.productos) : [],
+      practicas_sustentables: data.practicas_sustentables
+        ? JSON.parse(data.practicas_sustentables)
+        : null,
+      badges: data.badges ? JSON.parse(data.badges) : null,
+    };
+  };
+
   const navigate = useNavigate();
 
   const { id } = useParams();
 
-  const [cliente, setCliente] = useState<Cliente>({
-    id: 0,
-    correo: "",
-    contrasena: "",
-    nombre: "",
-    apellido: "",
-    edad: 0,
-    tipo_cliente: "",
-    granja_id: 0,
-    imagen: "",
-    granja: {
-      id: 0,
-      nombre: "",
-      ubicacion: "",
-      descripcion: "",
-      rating: 0,
-      imagen: "",
-      productos: [],
-      granja_practicas: [],
-      badge_granja: [],
-    },
+  const [cliente, setCliente] = useState<FormattedGranja>({
+    GranjaID: null,
+    Nombre: "",
+    Ubicacion: "",
+    Descripcion: "",
+    Rating: null,
+    Imagen: "",
+    UsuarioID: null,
+    usuario: null,
+    productos: [],
+    practicas_sustentables: null,
+    badges: null,
   });
 
   const handleProfileInfo = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_APP_SERVER_URL}/profile/${id}`
+        `${import.meta.env.VITE_APP_SERVER_URL}/myfarm/${id}`
       );
 
       const data = await response.json();
 
-      setCliente(data[0]);
+      setCliente(formatGranjaData(data));
     } catch (err) {
       console.log(err);
     }
@@ -91,18 +125,18 @@ function HomePage() {
           }}
         >
           <div
-            style={{ backgroundImage: `url('${cliente.imagen}')` }}
+            style={{ backgroundImage: `url('${cliente.Imagen}')` }}
             className="h-[200px] w-[200px] rounded-full ml-10 mt-[100px] border-white border-[2px] shadow-lg bg-center bg-cover"
           ></div>
         </div>
         <div className="flex min-h-[100px] ml-[200px] pl-14 flex-col justify-center items-start">
-          <span className="text-xl font-bold">{cliente.granja?.nombre}</span>
+          <span className="text-xl font-bold">{cliente.usuario?.nombre}</span>
 
           <span className="font-light">
-            {cliente.nombre} {cliente.apellido}
+            {cliente.usuario?.nombre} {cliente.usuario?.apellido}
           </span>
           <span className="font-light text-zinc-400 text-sm">
-            {cliente.correo}
+            {cliente.usuario?.correo}
           </span>
         </div>
 
@@ -110,25 +144,34 @@ function HomePage() {
           <div className="w-[80%] bg-white shadow-lg min-h-[400px] flex justify-between rounded-lg">
             <div className="w-[50%] h-full p-5">
               <div
-                style={{ backgroundImage: `url("${cliente.granja.imagen}")` }}
+                style={{ backgroundImage: `url("${cliente.Imagen}")` }}
                 className="h-full w-full bg-cover bg-center rounded-md"
               ></div>
             </div>
             <div className="w-[50%] h-full py-5 pr-5 flex flex-col justify-between items-start">
               <span className="flex justify-between items-center w-full">
                 <span className="text-3xl font-inter font-bold">
-                  {cliente.granja.nombre}
+                  {cliente.Nombre}
                 </span>
 
-                <span>{cliente.granja.rating}/5</span>
-                <span>
+                <span>{cliente.Rating}/5</span>
+                <span className="flex flex-col gap-2">
+                  <button
+                    className="flex bg-zinc-400 items-center rounded-full justify-between px-2 hover:bg-zinc-600 tr"
+                    onClick={() => {
+                      navigate(`/editfarm/${cliente.GranjaID}`);
+                    }}
+                  >
+                    <span>Edit Info</span>
+                    <MdOutlineEdit />
+                  </button>
                   <button
                     className="flex bg-zinc-400 items-center rounded-full gap-3 px-2 hover:bg-zinc-600 tr"
                     onClick={() => {
-                      navigate(`/editfarm/${cliente.granja.id}`);
+                      navigate(`/editpracts/${cliente.GranjaID}`);
                     }}
                   >
-                    <span>Edit</span>
+                    <span>Edit Prácticas</span>
                     <MdOutlineEdit />
                   </button>
                 </span>
@@ -137,7 +180,7 @@ function HomePage() {
               <div className="flex flex-col items-start text-lg">
                 <span className="text-2xl font-inter font-light w-full flex justify-start gap-5">
                   <span className="flex gap-3 items-center text-base">
-                    {cliente.granja.granja_practicas?.map(
+                    {cliente.practicas_sustentables?.map(
                       (prac: any, idx: number) => (
                         <span key={idx} className="relative group">
                           <img
@@ -155,12 +198,12 @@ function HomePage() {
                 </span>
 
                 <span className="flex flex-col gap-1 mt-4 w-full">
-                  <span>Descripción: {cliente.granja.descripcion}</span>
-                  <span>Ubicación: {cliente.granja.ubicacion}</span>
+                  <span>Descripción: {cliente.Descripcion}</span>
+                  <span>Ubicación: {cliente.Ubicacion}</span>
                 </span>
 
                 <span className="w-full">
-                  {cliente.granja.productos?.map((item: any, idx: number) => (
+                  {cliente.productos?.map((item: any, idx: number) => (
                     <span
                       key={idx}
                       className="font-extralight text-zinc-500 text-base"
@@ -179,30 +222,44 @@ function HomePage() {
               <span className="absolute top-1 right-3 text-zinc-500">
                 Badges
               </span>
-              {cliente.granja.badge_granja?.map((item, idx) => (
+              {cliente.badges?.map((item, idx) => (
                 <span
                   key={idx}
                   className="bg-green-900 rounded-full shadow-lg relative group"
                 >
-                  <img src={item.badge.imagen} className="h-[40px]" />
+                  <img src={item.imagen} className="h-[40px]" />
 
                   <span className="absolute text-nowrap bg-zinc-200 p-1 hidden group-hover:flex">
-                    {item.badge.descripcion}
+                    {item.descripcion}
                   </span>
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="w-[80%] bg-white p-5 rounded-lg shadow-lg flex gap-5 flex-wrap mb-10">
-            {cliente.granja.productos?.map((item, idx) => (
-              <ProductCard
-                key={idx}
-                image={item.image}
-                name={item.name}
-                desc={item.desc}
-              />
-            ))}
+          <div className="w-[80%] bg-white p-5 rounded-lg shadow-lg flex flex-col mb-10">
+            <span className="w-full flex justify-end">
+              <button
+                className="flex bg-zinc-400 items-center rounded-full gap-3 px-2 hover:bg-zinc-600 tr"
+                onClick={() => {
+                  navigate(`/editproducts/${cliente.GranjaID}`);
+                }}
+              >
+                <span>Edit Productos</span>
+                <MdOutlineEdit />
+              </button>
+            </span>
+
+            <div className="flex gap-5 flex-wrap">
+              {cliente.productos?.map((item, idx) => (
+                <ProductCard
+                  key={idx}
+                  image={item.image}
+                  name={item.name}
+                  desc={item.descripcion}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,10 +1,52 @@
 import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import FarmCard, { farmCard } from "./catalog/FarmCard";
+import FarmCard from "./catalog/FarmCard";
 
 //Icons
 import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+
+export type GranjaType = {
+  GranjaID: number;
+  Nombre: string;
+  Ubicacion: string;
+  Descripcion: string;
+  BadgeID: number | null;
+  Rating: number | null;
+  Imagen: string;
+  UsuarioID: number;
+};
+
+export type Granja = {
+  GranjaID: number;
+  Nombre: string;
+  Ubicacion: string;
+  Descripcion: string;
+  Rating: number;
+  Imagen: string;
+  UsuarioID: number | null;
+  productos: string;
+  practicas_sustentables: string;
+  badges: string;
+};
+
+export type FormattedGranja = {
+  GranjaID: number;
+  Nombre: string;
+  Ubicacion: string;
+  Descripcion: string;
+  Rating: number;
+  Imagen: string;
+  UsuarioID: number | null;
+  productos: { name: string; Descripcion: string; image: string }[];
+  practicas_sustentables: {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    icon: string;
+  }[];
+  badges: { id: number; nombre: string; descripcion: string; imagen: string }[];
+};
 
 function Catalog() {
   const [practices] = useState([
@@ -24,36 +66,36 @@ function Catalog() {
 
   const [page, setPage] = useState<number>(1);
 
-  const [allFarms, setAllFarms] = useState<farmCard[]>([]);
+  const [allFarms, setAllFarms] = useState<FormattedGranja[]>([]);
 
-  const [search, setSearch] = useState<string>("");
+  const [_, setSearch] = useState<string>("");
+
+  function formatGranjaData(granja: Granja): FormattedGranja[] {
+    return [
+      {
+        GranjaID: granja.GranjaID,
+        Nombre: granja.Nombre,
+        Ubicacion: granja.Ubicacion,
+        Descripcion: granja.Descripcion,
+        Rating: granja.Rating,
+        Imagen: granja.Imagen,
+        UsuarioID: granja.UsuarioID,
+        productos: JSON.parse(granja.productos),
+        practicas_sustentables: JSON.parse(granja.practicas_sustentables),
+        badges: JSON.parse(granja.badges),
+      },
+    ];
+  }
 
   const applyFilters = async () => {
-    const allFilters: any[] = [];
-
-    console.log(selectedPract);
-
-    for (let i = 0; i < selectedPract.length; i++) {
-      allFilters.push(practices[selectedPract[i]]);
-    }
-
-    const temp = {
-      page: page,
-      search: search,
-      filters: allFilters,
-    };
-
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_APP_SERVER_URL}/allfarms`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(temp),
-        }
+        `${import.meta.env.VITE_APP_SERVER_URL}/farms`
       );
 
-      const data = await response.json();
+      let data = await response.json();
+
+      data = data.flatMap((item: Granja) => formatGranjaData(item));
 
       setAllFarms(data);
     } catch (err) {
@@ -112,18 +154,19 @@ function Catalog() {
           <div className="h-[85%] py-3 w-full">
             <div className="w-full h-full overflow-y-auto">
               <div className="gap-4 flex flex-col">
-                {allFarms.map((farm: farmCard, idx: number) => (
+                {allFarms.map((farm: FormattedGranja, idx: number) => (
                   <FarmCard
                     key={idx}
-                    id={farm.id}
-                    nombre={farm.nombre}
-                    ubicacion={farm.ubicacion}
-                    descripcion={farm.descripcion}
-                    rating={farm.rating}
-                    imagen={farm.imagen}
+                    GranjaID={farm.GranjaID}
+                    Nombre={farm.Nombre}
+                    Ubicacion={farm.Ubicacion}
+                    Descripcion={farm.Descripcion}
+                    Rating={farm.Rating}
+                    Imagen={farm.Imagen}
                     productos={farm.productos}
-                    granja_practicas={farm.granja_practicas}
-                    badge_granja={farm.badge_granja}
+                    practicas_sustentables={farm.practicas_sustentables}
+                    badges={farm.badges}
+                    UsuarioID={farm.UsuarioID}
                   />
                 ))}
               </div>

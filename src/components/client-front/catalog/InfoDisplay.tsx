@@ -2,36 +2,50 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft, FaFacebook } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
-import { farmCard } from "./FarmCard";
 import ProductCard from "./ProductCard";
+import { FormattedGranja, Granja } from "../Catalog";
 
 function InfoDisplay() {
-  const [farmInfo, setFarmInfo] = useState<farmCard>({
-    id: 0,
-    nombre: "",
-    ubicacion: "",
-    descripcion: "",
-    rating: 0,
-    imagen: "",
+  const [farmInfo, setFarmInfo] = useState<FormattedGranja>({
+    GranjaID: 0,
+    Nombre: "",
+    Ubicacion: "",
+    Descripcion: "",
+    Rating: 0,
+    Imagen: "",
+    UsuarioID: null,
     productos: [],
-    granja_practicas: [],
-    badge_granja: [],
+    practicas_sustentables: [],
+    badges: [],
   });
+
+  function formatGranjaData(granja: Granja): FormattedGranja {
+    return {
+      GranjaID: granja.GranjaID,
+      Nombre: granja.Nombre,
+      Ubicacion: granja.Ubicacion,
+      Descripcion: granja.Descripcion,
+      Rating: granja.Rating,
+      Imagen: granja.Imagen,
+      UsuarioID: granja.UsuarioID,
+      productos: JSON.parse(granja.productos),
+      practicas_sustentables: JSON.parse(granja.practicas_sustentables),
+      badges: JSON.parse(granja.badges),
+    };
+  }
 
   const { id } = useParams();
 
   const getInfoById = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_APP_SERVER_URL}/farminfo/${id}`
+        `${import.meta.env.VITE_APP_SERVER_URL}/farm/${id}`
       );
 
       const data = await response.json();
 
-      console.log(data[0]);
-
       if (data) {
-        setFarmInfo(data[0]);
+        setFarmInfo(formatGranjaData(data));
       }
     } catch (err) {
       console.log(err);
@@ -75,32 +89,32 @@ function InfoDisplay() {
             <div className="bg-white min-h-[500px] w-full rounded-lg shadow-lg flex justify-between items-center">
               <div className="w-[50%] h-full p-5">
                 <div
-                  style={{ backgroundImage: `url("${farmInfo.imagen}")` }}
+                  style={{ backgroundImage: `url("${farmInfo.Imagen}")` }}
                   className="h-full w-full bg-cover bg-center rounded-md"
                 ></div>
               </div>
               <div className="w-[50%] h-full py-5 pr-5 flex flex-col justify-between items-start">
                 <span className="flex justify-between items-center w-full">
                   <span className="text-3xl font-inter font-bold">
-                    {farmInfo.nombre}
+                    {farmInfo.Nombre}
                   </span>
 
-                  <span>{farmInfo.rating}/5</span>
+                  <span>{farmInfo.Rating}/5</span>
                 </span>
 
                 <div className="flex flex-col items-start text-lg">
                   <span className="text-2xl font-inter font-light w-full flex justify-start gap-5">
                     <span className="flex gap-3 items-center text-base">
-                      {farmInfo.granja_practicas?.map(
+                      {farmInfo.practicas_sustentables?.map(
                         (prac: any, idx: number) => (
                           <span key={idx} className="relative group">
                             <img
-                              src={`${prac.practicassustentables.icon}`}
+                              src={`${prac.icon}`}
                               className="h-[20px] cursor-pointer hover:scale-105 tr"
                             />
 
                             <span className="absolute bg-zinc-100 text-nowrap p-1 rounded-sm shadow-md hidden group-hover:flex select-none">
-                              {prac.practicassustentables.nombre}
+                              {prac.nombre}
                             </span>
                           </span>
                         )
@@ -109,8 +123,8 @@ function InfoDisplay() {
                   </span>
 
                   <span className="flex flex-col gap-1 mt-4 w-full">
-                    <span>Descripción: {farmInfo.descripcion}</span>
-                    <span>Ubicación: {farmInfo.ubicacion}</span>
+                    <span>Descripción: {farmInfo.Descripcion}</span>
+                    <span>Ubicación: {farmInfo.Ubicacion}</span>
                   </span>
 
                   <span className="w-full">
@@ -145,15 +159,15 @@ function InfoDisplay() {
                 <span className="absolute top-1 right-3 text-zinc-500">
                   Badges
                 </span>
-                {farmInfo.badge_granja.map((item, idx) => (
+                {farmInfo.badges?.map((item, idx) => (
                   <span
                     key={idx}
                     className="bg-green-900 rounded-full shadow-lg relative group"
                   >
-                    <img src={item.badge.imagen} className="h-[40px]" />
+                    <img src={item.imagen} className="h-[40px]" />
 
                     <span className="absolute text-nowrap bg-zinc-200 p-1 hidden group-hover:flex">
-                      {item.badge.descripcion}
+                      {item.descripcion}
                     </span>
                   </span>
                 ))}
@@ -161,12 +175,12 @@ function InfoDisplay() {
             </div>
 
             <div className="w-full bg-white p-5 rounded-lg shadow-lg flex gap-5 flex-wrap">
-              {farmInfo.productos.map((item, idx) => (
+              {farmInfo.productos?.map((item, idx) => (
                 <ProductCard
                   key={idx}
                   image={item.image}
                   name={item.name}
-                  desc={item.desc}
+                  desc={item.Descripcion}
                 />
               ))}
             </div>
