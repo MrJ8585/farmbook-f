@@ -1,0 +1,9 @@
+{
+	"IsEncrypted": false,
+	"Values": {
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"FUNCTIONS_WORKER_RUNTIME": "node",
+		"BLOB_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=farmbook85store470535dc;AccountKey=5DKJeADGPU8/Egpdxh/qbfAZU0tUUCSY6I1Lj71zOxUWdjUap7Mdhk7+VPYDVddJEkGHcTOs3mKK+AStIPw2xQ==;EndpointSuffix=core.windows.net",
+		"SQL_CONNECTION_STRING": "Server=farmbook85-sqlservere18582c7.database.windows.net;Database=farmbook85-sqldb;User Id=adminsql;Password=SuperSecret1234!;Encrypt=true;TrustServerCertificate=false;Connection Timeout=30;"
+	}
+}
