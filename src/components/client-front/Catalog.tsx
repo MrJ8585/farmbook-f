@@ -99,7 +99,12 @@ function Catalog() {
 
       let data = await response.json();
 
-      data = data.map((item: Granja) => formatGranjaData(item)).flat();
+      if (Array.isArray(data)) {
+        data = data.map((item: Granja) => formatGranjaData(item)).flat();
+      } else {
+        console.error("Data is not an array:", data);
+        data = [];
+      }
 
       setAllFarms(data);
     } catch (err) {
