@@ -5,6 +5,44 @@ import { useNavigate } from "react-router-dom";
 function Register() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const [userInfo, setUserInfo] = useState({
+    correo: "",
+    contrasena: "",
+    nombre: "",
+    apellido: "",
+    edad: "",
+    tipoCliente: "Agricultor",
+  });
+
+  const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
+  const handleRegister = async () => {
+    let dummy = {
+      correo: userInfo.correo,
+      contrasena: userInfo.contrasena,
+      nombre: userInfo.nombre,
+      apellido: userInfo.apellido,
+      edad: userInfo.edad,
+      tipoCliente: userInfo.tipoCliente,
+    };
+
+    console.log(dummy);
+    try {
+      const response = await fetch(`${route}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dummy),
+      });
+
+      const data = await response.json();
+
+      if (data.message == "Usuario registrado exitosamente") {
+        navigate("/login");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const navigate = useNavigate();
   return (
     <div className="bg-secondary-blue h-screen w-full relative overflow-hidden flex">
@@ -41,28 +79,52 @@ function Register() {
           <div className="flex flex-col justify-start gap-4 w-[40%]">
             <span className="flex flex-col justify-start items-start">
               <span className="font-sulphurPoint text-xl">Correo</span>
-              <input className="w-full p-3"></input>
+              <input
+                className="w-full p-3"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, correo: e.target.value })
+                }
+              ></input>
             </span>
 
             <span className="flex flex-col justify-start items-start">
               <span className="font-sulphurPoint text-xl">Nombre</span>
-              <input className="w-full p-3"></input>
+              <input
+                className="w-full p-3"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, nombre: e.target.value })
+                }
+              ></input>
             </span>
 
             <span className="flex flex-col justify-start items-start">
               <span className="font-sulphurPoint text-xl">Apellido</span>
-              <input className="w-full p-3"></input>
+              <input
+                className="w-full p-3"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, apellido: e.target.value })
+                }
+              ></input>
             </span>
 
             <span className="flex justify-start gap-5">
               <span className="flex flex-col justify-start items-start">
                 <span className="font-sulphurPoint text-xl">Edad</span>
-                <input className="w-full p-3"></input>
+                <input
+                  className="w-full p-3"
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, edad: e.target.value })
+                  }
+                ></input>
               </span>
               <span className="flex flex-col justify-start items-start">
                 <span className="font-sulphurPoint text-xl">Soy:</span>
                 <span className="p-3 bg-white">
-                  <select>
+                  <select
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, tipoCliente: e.target.value })
+                    }
+                  >
                     <option>Agricultor</option>
                     <option>Cliente</option>
                   </select>
@@ -71,7 +133,10 @@ function Register() {
             </span>
 
             <span className="w-full flex justify-end items-end">
-              <button className="py-3 px-10 bg-main-blue text-white hover:scale-105 tr">
+              <button
+                className="py-3 px-10 bg-main-blue text-white hover:scale-105 tr"
+                onClick={() => handleRegister()}
+              >
                 Enviar
               </button>
             </span>

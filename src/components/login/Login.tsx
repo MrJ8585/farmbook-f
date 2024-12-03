@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
 
   const [userInfo, setUserInfo] = useState({
@@ -27,13 +29,18 @@ function Login() {
 
       const data = await response.json();
 
+      if (data.user.TipoClienteID == 1) {
+        navigate(`/profile/${data.user.UsuarioID}`);
+      } else if (data.user.TipoClienteID == 2) {
+        navigate(`/catalog`);
+      }
+
       console.log(data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const navigate = useNavigate();
   return (
     <div className="bg-secondary-blue h-screen w-full relative overflow-hidden flex">
       <div className="h-[200%] w-[500px] bg-white rotate-[30deg] -translate-x-[40%] -translate-y-[30%]"></div>
