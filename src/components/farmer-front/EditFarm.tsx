@@ -40,11 +40,11 @@ const EditFarm = () => {
 
 	const { id } = useParams();
 
-	const route = import.meta.env.VITE_APP_SERVER_URL || "/api/";
+	const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
 
 	const handleGetInfo = async () => {
 		try {
-			const response = await fetch(`${route}myfarm/${id}`);
+			const response = await fetch(`${route}/myfarm/${id}`);
 
 			const data = await response.json();
 

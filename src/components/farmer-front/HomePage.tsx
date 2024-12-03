@@ -79,11 +79,11 @@ function HomePage() {
 		badges: null,
 	});
 
-	const route = import.meta.env.VITE_APP_SERVER_URL || "/api/";
+	const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
 
 	const handleProfileInfo = async () => {
 		try {
-			const response = await fetch(`${route}myfarm/${id}`);
+			const response = await fetch(`${route}/myfarm/${id}`);
 
 			const data = await response.json();
 

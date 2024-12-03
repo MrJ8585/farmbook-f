@@ -36,11 +36,11 @@ function InfoDisplay() {
 
 	const { id } = useParams();
 
-	const route = import.meta.env.VITE_APP_SERVER_URL || "/api/";
+	const route = import.meta.env.VITE_APP_SERVER_URL || "/api";
 
 	const getInfoById = async () => {
 		try {
-			const response = await fetch(`${route}farm/${id}`);
+			const response = await fetch(`${route}/farm/${id}`);
 
 			const data = await response.json();
 
